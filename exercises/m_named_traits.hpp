@@ -1,3 +1,5 @@
+#pragma once
+
 #include <concepts>
 #include <functional>
 #include <type_traits>
@@ -18,9 +20,3 @@ concept Transformation = requires(Struct s, Type t) {
   { s.pred } -> is_predicate_function<Type>;
   { s(t) } -> std::convertible_to<Type>;
 };
-
-template <typename F, typename P>
-  requires Transformation<F, P>
-P apply_transformation(F transformation, P param) {
-  return transformation(param);
-}
