@@ -62,3 +62,52 @@ auto circular_nonterminating_orbit(const F &f, const E &x) -> bool {
   E y = collision_point(f, x);
   return f.pred(y) && x == f(y);
 }
+
+template <typename F, typename E>
+  requires Transformation<F, E>
+auto convergent_point(const F &f, E x0, E x1) -> E {
+  while (x0 != x1) {
+    x0 = f(x0);
+    x1 = f(x1);
+  }
+
+  return x0;
+}
+
+template <typename F, typename E>
+  requires Transformation<F, E>
+auto connection_point_nonterminating_orbit(const F &f, E x) -> E {
+  return convergent_point(f, x, f(collision_point_nonterminating_orbit(x, f)));
+}
+
+template <typename F, typename E>
+  requires Transformation<F, E>
+auto connection_point(const F &f, E x) -> E {
+  E y = collision_point(f, x);
+  if (!f.pred(y))
+    return y;
+
+  return convergent_point(f, x, f(y));
+}
+
+template <typename F, typename E>
+  requires Transformation<F, E>
+auto do_intersect(const F &f, E x0, E x1) -> bool {
+  E y0 = collision_point(f, x0);
+  E y1 = collision_point(f, x1);
+  // if they both reach some sink, then check to see if the sinks are equal to
+  // eachother. if they aren't, then they never got on the same path
+  if (!f.pred(y0) || !f.pred(y1)) {
+    return y0 == y1;
+  }
+  // guard against y0 and y1 being in different cycles
+  E ptr = y0;
+  do {
+    if (ptr == y1)
+      return true;
+    ptr = f(ptr);
+
+  } while (ptr != y0);
+
+  return false;
+}

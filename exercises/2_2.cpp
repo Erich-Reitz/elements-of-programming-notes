@@ -7,6 +7,8 @@
 
 #include <iostream>
 
+
+
 struct OrbitModuloTenOperation {
   std::function<int(int)> func = [](int n) -> int {
     n = n + 1;
@@ -53,10 +55,39 @@ private:
   }
 };
 
+struct OrbitZeroThroughThreeElseTerminate {
+  std::function<int(int)> func = [](int n) -> int {
+    if (0 <= n && n <= 2) {
+      return (++n % 3); 
+    }
+    return -1; 
+  };
+
+  std::function<bool(int)> pred = [](int n) -> bool {
+    return (0 <= n) && (n <= 2);
+  };
+
+  auto operator()(int x) const -> int { return apply(x); }
+
+private:
+  auto apply(int n) const -> int {
+    if (!pred(n)) {
+      throw OutOfDefinitionSpace("!pred(n) OrbitModuloTenOperation");
+    }
+
+    return func(n);
+  }
+};
+
 int main() {
   OrbitModuloTenOperation operation;
   std::cout << std::boolalpha; 
-  std::cout << circular(operation, 2) << std::endl;
+  // true, these orbits intersect. (2 will reach 3 in one hop)
+  std::cout << do_intersect(operation, 2, 3) << std::endl;
   OrbitModuloTenOperationBrokenNonCircular broken_op; 
-  std::cout << circular(broken_op, 2) << std::endl;
+  // true, both will fall into the "5" hole
+  std::cout << do_intersect(broken_op, 2, 4) << std::endl;
+  OrbitZeroThroughThreeElseTerminate terminate_gt_three_op; 
+  // should not intersect. 2 will orbit [0, 2], 5 will terminate at -1 immediately
+  std::cout << do_intersect(terminate_gt_three_op, 2, 5) << std::endl;
 }
