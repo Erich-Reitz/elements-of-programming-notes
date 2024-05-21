@@ -3,12 +3,8 @@
 
 #include <iostream>
 #include <numeric>
-#include <stdexcept>
 
-struct OutOfDefinitionSpace : public std::runtime_error {
-  OutOfDefinitionSpace(const std::string &what = "")
-      : std::runtime_error(what) {}
-};
+#include "OutOfDefinitionSpace.hpp"
 
 int add(int n1, int n2) {
   auto within_definition_space = [](int a, int b) -> bool {
