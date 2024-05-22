@@ -1,5 +1,11 @@
-// Exercise: Design an algorithm that determines, given a transformation and its
-// definition-space predicate, whether the orbits of two elements intersect
+// Exercise: For convergent_point to work, it must be called with elements whose
+// distances to the convergent point are equal. Implement an algorithm
+// convergent_point_guarded for use when that is not known to the case, but
+// there is an element in common to the oribts of both.
+
+// I'm not sure about this one.
+// convergent_point should work anyway if one of the elements is in a cycle, at
+// the convergent point n away and the other is in a handle 2n away.
 
 #include "collision_point.hpp"
 #include "modulo_cycles.hpp"

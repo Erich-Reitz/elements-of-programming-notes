@@ -76,6 +76,20 @@ auto convergent_point(const F &f, E x0, E x1) -> E {
 
 template <typename F, typename E>
   requires Transformation<F, E>
+auto convergent_point_guarded(const F &f, E x0, E x1) -> E {
+  assert(do_intersect(f, x0, y0));
+
+  // convergent_point should work anyway if one of the elements is in a cycle, n
+  // away from the convergent point and the other is in a handle 2n away. I'm
+  // not sure what it means to find a convergent point if they intersect but
+  // don't converge by the function. when does (++ % 10)(1) converge with (++ %
+  // 10)(2) ?
+
+  throw std::runtime_error("unimplemented");
+}
+
+template <typename F, typename E>
+  requires Transformation<F, E>
 auto connection_point_nonterminating_orbit(const F &f, E x) -> E {
   return convergent_point(f, x, f(collision_point_nonterminating_orbit(x, f)));
 }
