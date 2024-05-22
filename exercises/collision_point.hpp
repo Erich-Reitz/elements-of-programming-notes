@@ -2,6 +2,7 @@
 
 #include <cassert>
 
+#include "m_distance.hpp"
 #include "m_named_traits.hpp"
 
 /** The collision point of a transformation f and a starting point x is the
@@ -124,4 +125,31 @@ auto do_intersect(const F &f, E x0, E x1) -> bool {
   } while (ptr != y0);
 
   return false;
+}
+
+template <typename F, typename E>
+  requires Transformation<F, E>
+auto orbit_structure_nonterminating_orbit(const F &f, E x0, E x1)
+    -> std::tuple<DistanceType, DistanceType, E> {
+  using N = DistanceType;
+  E y = connection_point_nonterminating_orbit(f, x);
+  const auto handle_size = distance(f, x, y);
+  const auto cycle_max_size = distance(f, f(y), y);
+  const auto m2 = y;
+  return {handle_size, cycle_max_size, m2};
+}
+
+template <typename F, typename E>
+  requires Transformation<F, E>
+auto orbit_structure(const F &f, E x0, E x1)
+    -> std::tuple<DistanceType, DistanceType, E> {
+  using N = DistanceType;
+  E y = connection_point(f, x);
+  const auto handle_size = distance(f, x, y);
+  N cycle_max_size(0);
+  if (f.pred(y)) {
+    cycle_max_size = distance(f, f(y), y);
+  }
+
+  return {handle_size, cycle_max_size, y};
 }
